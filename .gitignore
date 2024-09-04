@@ -1,0 +1,4 @@
+target/
+sync.sh
+lwd.db
+.DS_Store
