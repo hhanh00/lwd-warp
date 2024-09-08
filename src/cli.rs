@@ -9,12 +9,10 @@ use tokio::sync::mpsc;
 use tonic::transport::Server;
 use zcash_primitives::consensus::{MainNetwork, NetworkUpgrade, Parameters};
 use zcash_warp::{
-    coin::connect_lwd,
-    lwd::{
+    coin::connect_lwd, lwd::{
         get_compact_block_range, get_tree_state,
         rpc::compact_tx_streamer_server::CompactTxStreamerServer,
-    },
-    warp::sync::builder::purge_blocks,
+    }, types::CheckpointHeight, warp::sync::builder::purge_blocks
 };
 use clap_repl::{reedline::{
     DefaultPrompt, DefaultPromptSegment, FileBackedHistory,
@@ -54,7 +52,7 @@ pub async fn build_db(url: &str, end_height: u32) -> Result<()> {
         .into();
     tracing::info!("Starting scan: {start_height}");
     let mut client = connect_lwd(url).await?;
-    let (s, o) = get_tree_state(&mut client, start_height).await?;
+    let (s, o) = get_tree_state(&mut client, CheckpointHeight(start_height)).await?;
     let (tx, rx) = mpsc::channel(128);
     tokio::spawn(async move {
         let mut block = get_compact_block_range(&mut client, start_height + 1, end_height).await?;
