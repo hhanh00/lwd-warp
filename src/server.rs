@@ -17,9 +17,7 @@ pub struct LWDServer {
 
 impl LWDServer {
     pub async fn new(max_height: u32) -> Result<LWDServer> {
-        let server = LWDServer {
-            max_height,
-        };
+        let server = LWDServer { max_height };
 
         Ok(server)
     }
@@ -157,6 +155,14 @@ impl CompactTxStreamer for LWDServer {
         &self,
         _request: Request<GetAddressUtxosArg>,
     ) -> Result<Response<Self::GetAddressUtxosStreamStream>, Status> {
+        todo!()
+    }
+
+    type GetMempoolStreamStream = ReceiverStream<Result<RawTransaction, Status>>;
+    async fn get_mempool_stream(
+        &self,
+        _request: Request<Empty>,
+    ) -> Result<Response<Self::GetMempoolStreamStream>, Status> {
         todo!()
     }
 
